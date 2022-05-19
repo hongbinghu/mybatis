@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace:dao接口的全限定类名-->
+<mapper namespace="com.asiainfo.mapper.UserMapper">
+    <!--0.resultMap:用于解决实体类与数据库字段名称不一致问题,从而建立对应关系解决封装问题
+          type:实体类的全限定类型
+          id:唯一标识,方便select查询标签引用
+          column:数据库列名
+          property:实体类属性
+    -->
+    <resultMap id="resultMap" type="com.asiainfo.domain.User">
+        <id column="id" property="id"></id>
+        <result column="username" property="userName"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="sex" property="sex"></result>
+        <result column="address" property="address"></result>
+    </resultMap>
+
+    <!-- 1.配置查询所有操作  ID：dao接口方法名称  resultType：返回值类型-->
+    <select id="findAll" resultMap="resultMap">
+            select * from user
+    </select>
+    <!--2.配置模糊查询 parameterType:传入参数类型-->
+    <select id="findLike" resultType="com.asiainfo.domain.User" parameterType="com.asiainfo.domain.User">
+        select * from user where username like #{username}
+    </select>
+    <!--3.插入一条数据 parameterType:传入参数类型#{}：语法使用格式 #{对象.属性}，例如#{User.username}会先去找User对象的username属性，并且调用get方法取值，由于我们再parameterType参数类型上配置了全类型名所以可以省略User直接写username -->
+    <insert id="saveUser" parameterType="com.asiainfo.domain.User">
+        insert into user (id,username,birthday,sex,address) values (#{id},#{username},#{birthday},#{sex},#{address})
+    </insert>
+    <!--4.更新-->
+    <update id="updteUser" parameterType="com.asiainfo.domain.User">
+        update user set username=#{username},birthday=#{birthday},sex=#{sex},address=#{address} where id=#{id}
+    </update>
+    <!--5.根据id查询-->
+    <select id="findById" resultType="com.asiainfo.domain.User" parameterType="int">
+        select * from user where id = #{id}
+    </select>
+    <!--6.删除-->
+    <delete id="deleteById" parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+    <!--7.聚合函数-->
+    <select id="findTatol" resultType="int">
+        select count(*) from user
+    </select>
+</mapper>
